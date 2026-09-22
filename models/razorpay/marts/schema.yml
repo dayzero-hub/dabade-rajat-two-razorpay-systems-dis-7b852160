@@ -1,0 +1,11 @@
+version: 2
+
+models:
+  - name: rz_ledger_by_payment
+    columns:
+      - name: payment_id
+        tests: [unique, not_null]
+  - name: rz_settlement_by_payment
+    columns:
+      - name: payment_id
+        tests: [unique, not_null]
