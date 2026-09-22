@@ -9,3 +9,12 @@ models:
     columns:
       - name: payment_id
         tests: [unique, not_null]
+  - name: rz_matched
+    columns:
+      - name: payment_id
+        tests: [unique, not_null]
+      - name: category
+        tests:
+          - not_null
+          - accepted_values:
+              values: [matched, ledger_only, settlement_only, differing]
