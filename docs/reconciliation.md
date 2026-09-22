@@ -55,3 +55,47 @@ these rules do not cover, `make build` goes red instead of the join fanning out.
 |---|---|---|
 | ledger | 19,261 | 19,200 (100% of rows — every row has a `payment_id`, `not_null` tested) |
 | settlement | 18,898 | 18,893 (100% of rows) |
+
+## Four-way classification (ticket 2)
+
+`rz_matched` full-outer-joins the two per-payment rollups and puts every payment in exactly one
+bucket, decided by the join (which side is null; do the paise agree). Two singular tests hold it
+together: `tests/rz_categories_cover_both_sides.sql` (the buckets add up to 19,200 ledger payments
+and 18,893 settlement payments, and nothing is unbucketed) and `tests/rz_categories_sum_to_the_gap.sql`
+(the per-bucket differences sum to the 107,463,730 paise gap).
+
+`make query Q="select * from rz_category_summary"`:
+
+| category | payments | ledger paise | settlement paise | difference (ledger − settlement) |
+|---|---|---|---|---|
+| matched | 17,934 | 4,958,123,312 | 4,958,123,312 | 0 |
+| ledger_only | 1,207 | 341,035,149 | — | +341,035,149 |
+| settlement_only | 900 | — | 225,952,484 | −225,952,484 |
+| differing | 59 | 13,123,242 | 20,742,177 | −7,618,935 |
+| **total** | | | | **+107,463,730** ✓ |
+
+Ledger side: 17,934 + 59 + 1,207 = 19,200 ✓. Settlement side: 17,934 + 59 + 900 = 18,893 ✓.
+
+### Hand reading (`make query Q=analyses/rz_unmatched_sample.sql`)
+
+**ledger_only (10 read):** three of the ten were captured after 18:00 (19:11, 20:02, 21:32) with
+no refund — those look like the bank has simply not settled them yet. The other seven (01:07,
+03:00, 03:12, 03:50, 11:10, 11:46, 14:25) were captured well before 18:00 and still have no UTR;
+nothing about the row explains it. Checking the whole bucket by hour: 1,200 of the 1,207 are
+18:00 or later, 7 are earlier.
+
+**settlement_only (10 read):** every one has `captured_on = 2025-09-14` and `settled_on =
+2025-09-15`, and the UTRs are consecutive (UTR5017999 onwards). The bank is settling yesterday's
+late captures today; our ledger for the 15th naturally has no row for them. All 900 rows in the
+bucket have `captured_on = 2025-09-14`.
+
+**differing (10 read):** three shapes —
+1. off by exactly 1 paise either way (199939 vs 199940, 99909 vs 99908): the bank rounds
+   differently to us somewhere;
+2. we refunded in full or in half after 18:00 (`refunded_ts` 18:08, 20:44, 21:25, 22:12) and the
+   bank settled the full capture — our net is lower by the refund;
+3. two UTRs for one payment, the second marked `RESUBMIT`, bank total exactly 2× ours.
+
+These are the shapes the causes in the next ticket come from. Nothing in the sample fell outside
+them, but that is a sample, not the whole bucket — ticket 3 classifies every row and names any
+remainder.
