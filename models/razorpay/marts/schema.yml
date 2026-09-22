@@ -18,3 +18,13 @@ models:
           - not_null
           - accepted_values:
               values: [matched, ledger_only, settlement_only, differing]
+  - name: rz_differences
+    columns:
+      - name: payment_id
+        tests: [unique, not_null]
+      - name: cause
+        tests:
+          - not_null
+          - accepted_values:
+              values: [timing_prior_day_capture, timing_captured_after_cutoff, missing_never_settled,
+                       settled_twice, refund_after_cutoff, rounding]
