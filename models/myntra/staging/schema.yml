@@ -1,0 +1,17 @@
+version: 2
+
+models:
+  - name: stg_my_sellers_2025_06
+    columns:
+      - name: seller_id
+        tests: [unique, not_null]
+  - name: stg_my_sellers_2025_09
+    columns:
+      - name: seller_id
+        tests: [unique, not_null]
+  - name: stg_my_orders
+    columns:
+      - name: order_id
+        tests: [unique, not_null]
+      - name: seller_id
+        tests: [not_null]

@@ -1,0 +1,16 @@
+# Generated data and the warehouse itself — rebuilt by `make data` and `make build`.
+data/*
+!data/.gitkeep
+*.duckdb
+*.duckdb.wal
+
+# dbt
+target/
+dbt_packages/
+logs/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.user.yml

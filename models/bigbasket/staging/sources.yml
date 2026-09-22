@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    description: Raw tables loaded by `make seed` from data/bigbasket/ (see scripts/load.py).
+    tables:
+      - name: bb_order_lines
+        description: One row per order line, straight from the order export. Nothing is cleaned here.

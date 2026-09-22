@@ -1,0 +1,45 @@
+name: 'warehouse'
+version: '1.0.0'
+config-version: 2
+
+# The profile is defined in the project-local profiles.yml, so dbt finds it when you run
+# from the repo root — no ~/.dbt setup needed.
+profile: 'warehouse'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+# One repository, four briefs. `make data BRIEF=<company>` writes the choice to `.brief`, the
+# Makefile exports it as DBT_BRIEF, and only that brief's models are enabled. With nothing
+# selected, `dbt build` has nothing to do and is green — the "fresh clone builds" check.
+#
+# Staging is thin and logic-free, so views. Everything else you build under a brief — marts, or
+# any folder you add — is a table. A model can override either with a config() block.
+models:
+  warehouse:
+    bigbasket:
+      +enabled: "{{ env_var('DBT_BRIEF', '') == 'bigbasket' }}"
+      +materialized: table
+      staging:
+        +materialized: view
+    swiggy:
+      +enabled: "{{ env_var('DBT_BRIEF', '') == 'swiggy' }}"
+      +materialized: table
+      staging:
+        +materialized: view
+    myntra:
+      +enabled: "{{ env_var('DBT_BRIEF', '') == 'myntra' }}"
+      +materialized: table
+      staging:
+        +materialized: view
+    razorpay:
+      +enabled: "{{ env_var('DBT_BRIEF', '') == 'razorpay' }}"
+      +materialized: table
+      staging:
+        +materialized: view

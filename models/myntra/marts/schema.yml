@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: dim_sellers
+    description: Overwrite-style seller dimension — one row per seller, today's attributes only.
+    columns:
+      - name: seller_id
+        tests: [unique, not_null]
+  - name: fct_orders
+    columns:
+      - name: order_id
+        tests: [unique, not_null]
+      - name: seller_category
+        tests: [not_null]

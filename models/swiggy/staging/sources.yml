@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    description: Raw tables in warehouse.duckdb, written by the daily load in scripts/load.py.
+    tables:
+      - name: sw_orders
+        description: >
+          Every order the daily job has ever loaded. batch_day is the day whose file the row
+          arrived in; order_date is when the order was placed. They are usually the same.

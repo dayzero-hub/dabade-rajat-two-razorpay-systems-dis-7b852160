@@ -1,0 +1,10 @@
+# Project-local profile. dbt reads a profiles.yml from the working directory, so running any
+# dbt command from the repo root just works — nothing to configure in ~/.dbt. The warehouse is a
+# single local DuckDB file; delete it and `make build` rebuilds it from the generated CSVs.
+warehouse:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: 'warehouse.duckdb'
+      threads: 4

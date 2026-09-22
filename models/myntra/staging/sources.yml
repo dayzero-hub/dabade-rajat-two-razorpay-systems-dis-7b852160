@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    description: Raw tables loaded by `make seed` from data/myntra/ (see scripts/load.py).
+    tables:
+      - name: my_sellers_2025_06
+        description: The seller master as exported on 2025-06-01.
+      - name: my_sellers_2025_09
+        description: The seller master as exported on 2025-09-01. Sellers changed in between.
+      - name: my_orders
+        description: One row per order, January to September 2025.

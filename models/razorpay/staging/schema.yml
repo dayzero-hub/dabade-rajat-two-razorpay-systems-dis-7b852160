@@ -1,0 +1,15 @@
+version: 2
+
+models:
+  - name: stg_rz_ledger
+    columns:
+      - name: entry_id
+        tests: [unique, not_null]
+      - name: payment_id
+        tests: [not_null]
+  - name: stg_rz_settlement
+    columns:
+      - name: utr
+        tests: [unique, not_null]
+      - name: payment_id
+        tests: [not_null]

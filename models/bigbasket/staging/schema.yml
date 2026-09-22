@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: stg_bb_order_lines
+    description: >
+      Raw grocery order lines, typed. customer_id is null for guest checkouts. delivery_fee_paise is
+      an ORDER-level amount that the export repeats on every line of the order.
+    columns:
+      - name: order_id
+        tests: [not_null]
+      - name: sku
+        tests: [not_null]
+      - name: qty
+        tests: [not_null]

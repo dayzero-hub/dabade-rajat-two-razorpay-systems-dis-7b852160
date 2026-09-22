@@ -1,0 +1,16 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    description: Raw tables loaded by `make seed` from data/razorpay/ (see scripts/load.py).
+    tables:
+      - name: rz_ledger
+        description: >
+          Our internal ledger for 2025-09-15: one row per entry. A payment's capture and any
+          refund against it are separate entries. Amounts are integer paise.
+      - name: rz_settlement
+        description: >
+          The bank's settlement file for 2025-09-15: one row per UTR. Amounts are rupees with
+          two decimals, as the bank sends them. captured_on is the bank's view of when the
+          payment was taken; settled_on is when the money moved.
